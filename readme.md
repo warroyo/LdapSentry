@@ -1,5 +1,7 @@
 # Sentry
 
+This is a forked version of the sentry authentication package to allow for ldap authentication. This is beta and may have minor issues. it is also meant to work specifically using the sAMAAccountName as the user.
+
 Sentry is a PHP 5.3+ fully-featured authentication & authorization system. It also provides additional features such as user groups and additional security features.
 
 Sentry is a framework agnostic set of interfaces with default implementations, though you can substitute any implementations you see fit.
@@ -11,6 +13,8 @@ Sentry is a framework agnostic set of interfaces with default implementations, t
 ### Features
 
 It also provides additional features such as user groups and additional security features:
+- Ldap login
+
 
 - Configurable authentication (can use any type of authentication required, such as username or email)
 - Authorization
@@ -26,16 +30,43 @@ It also provides additional features such as user groups and additional security
 
 ### Installation
 
-Installation of Sentry is very easy. We've got a number of guides to get Sentry working with your favorite framework or on it's own:
+Installation of LdapSentry is very easy. Add:
+
+    "repositories": [
+    {
+        "type":"git",
+        "url":"https://github.com/warroyo/LdapSentry.git"
+    }]
+
+to your composer.json file then follow one of the following guides to get SentryLdap working with your favorite framework or on it's own:
+
 
 1. Install in [Laravel 4](http://docs.cartalyst.com/sentry-2/installation/laravel-4)
 2. Install in [FuelPHP 1](http://docs.cartalyst.com/sentry-2/installation/fuelphp-1)
 3. Install in [CodeIgniter 3](http://docs.cartalyst.com/sentry-2/installation/codeigniter-3)
 4. Use [natively (through composer)](http://docs.cartalyst.com/sentry-2/installation/composer)
 
-### Upgrading
+### Using
 
-Currently, we do not have an upgrade method from Sentry 1, however we may be able to publish one before the stable release of Sentry 2.0. When upgrading between betas or release-candidates, please see [our changelog](https://github.com/cartalyst/sentry/blob/master/changelog.md).
+This library is still beta for ldap functions. You have to change this lines in your config file.
+
+	 'ldap' => array(
+                'binduser'     =>  'user',
+                'bindpass'     =>  'password',
+                'server'        => 'ldap://your.ldap.server',
+                'port'          => '',
+                'searchdn'      =>  array('Guests' => ''),
+        ),
+
+
+After this settings you have to follow sentry orginal document file. You can use ldap login like this;
+
+     $user = Sentry::authenticateWithLdap($credentials, false);
+or
+      Sentry::authenticateWithLdapAndRemember($credentials);
+
+### Upgrading
+this works with current version of sentry, I will work on updating.
 
 ### Support
 
