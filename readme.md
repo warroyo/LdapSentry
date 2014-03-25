@@ -63,6 +63,7 @@ After this settings you have to follow sentry orginal document file. You can use
 
      $user = Sentry::authenticateWithLdap($credentials, false);
 or
+
       Sentry::authenticateWithLdapAndRemember($credentials);
 
 ### Upgrading
