@@ -41,6 +41,8 @@ class Provider implements ProviderInterface {
 	 * @var \Cartalyst\Sentry\Hashing\HasherInterface
 	 */
 	protected $hasher;
+	
+	protected $ldap;
 
 	/**
 	 * Create a new Eloquent User provider.
@@ -49,9 +51,10 @@ class Provider implements ProviderInterface {
 	 * @param  string  $model
 	 * @return void
 	 */
-	public function __construct(HasherInterface $hasher, $model = null)
+	public function __construct(HasherInterface $hasher, $model = null,$ldap)
 	{
 		$this->hasher = $hasher;
+		$this->ldap = $ldap;
 
 		if (isset($model))
 		{
@@ -171,6 +174,92 @@ class Provider implements ProviderInterface {
 
 		return $user;
 	}
+	
+	
+	 public function findByLdapCredentials(array $credentials)
+        {
+	 	$ldapConnection = ldap_connect($this->ldap['server'],$this->ldap['port']);
+
+                foreach ($this->ldap['searchdn'] as $groupname => $dn)
+                {
+                                $bind = @ldap_bind($ldapConnection,$this->ldap['binduser'], $this->ldap['bindpass']);
+                                $data = ldap_search($ldapConnection,$dn,"(sAMAccountName=".$credentials['email'].")");
+                                $data = ldap_get_entries($ldapConnection, $data);
+                                if($data['count'] > 0){
+                                        $username=$data[0]['distinguishedname'][0];
+                                        $full= explode(',',$data[0]['displayname'][0]);
+                                        $last=$full[0];
+                                        $first=$full[1];
+                                        if (($result = @ldap_bind($ldapConnection,$username,$credentials['password']))){
+
+                                                $model     = $this->createModel();
+                                                $loginName = $model->getLoginName();
+                                                if ( ! array_key_exists($loginName, $credentials))
+                                                {
+                                                        throw new \InvalidArgumentException("Login attribute [$loginName] was not provided.");
+                                                }
+
+                                                $passwordName = $model->getPasswordName();
+
+                                                $query              = $model->newQuery();
+
+                                                $query = $query->where("username", '=', $credentials['email']);
+
+                                                if ( ! $user = $query->first())
+                                                {
+                                                        // First time login Create user
+
+                                                        try
+                                                        {
+                                                                // Create the user
+                                                           $user = $this->create(
+                                                                array(
+                                                                        'username' => $credentials['email'],
+                                                                        'email' => $data[0]['mail'][0],
+                                                                        'first_name' => $first,
+                                                                        'last_name' => $last,
+                                                                        'activated' => 1
+                                                                ));
+
+                                                                // Find the group which specified at config file
+                                                                $groupProvider = new \Cartalyst\Sentry\Groups\Eloquent\Provider;
+                                                                $configGroup = $groupProvider->findByName($groupname);
+                                                                // Assign the group to the user
+                                                                $user->addGroup($configGroup);
+                                                        }
+                                                        catch (Cartalyst\Sentry\Users\LoginRequiredException $e)
+                                                        {
+                                                                echo 'Login field is required.';
+                                                        }
+                                                        catch (Cartalyst\Sentry\Users\UserExistsException $e)
+                                                        {
+                                                                echo 'User with this login already exists.';
+                                                        }
+                                                        catch (Cartalyst\Sentry\Groups\GroupNotFoundException $e)
+                                                        {
+                                                                echo 'Group was not found.';
+                                                        }
+                                                }
+                                                return $user;
+                                        }
+
+                                }
+
+                }
+                        // If user not found in any dn, password is incorrect or user not found!
+                        if(ldap_errno($ldapConnection)==49)
+                        {
+                                // Password wrong or user not found
+                                throw new WrongPasswordException(ldap_error($ldapConnection));
+                        }
+                        else
+                        {
+                        //Other Error
+                        throw new \RuntimeException(ldap_error($ldapConnection));
+                        }
+                        ldap_unbind($ldapConnection);
+        }
+
 
 	/**
 	 * Finds a user by the given activation code.
