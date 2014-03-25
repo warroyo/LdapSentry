@@ -1,4 +1,4 @@
-# Sentry
+# LdapSentry
 
 This is a forked version of the sentry authentication package to allow for ldap authentication. This is beta and may have minor issues. it is also meant to work specifically using the sAMAAccountName as the user.
 
