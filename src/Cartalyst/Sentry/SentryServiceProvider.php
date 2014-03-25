@@ -139,8 +139,15 @@ class SentryServiceProvider extends ServiceProvider {
 					array($pivotTable)
 				);
 			}
+			 if(!isset($app['config']['cartalyst/sentry::ldap'])){
+                            $ldap = null;
+                        }
+                        else{
+                            $ldap = $app['config']['cartalyst/sentry::ldap'];
+                        }
 
-			return new UserProvider($app['sentry.hasher'], $model);
+
+			return new UserProvider($app['sentry.hasher'], $model,$ldap);
 		});
 	}
 
