@@ -178,7 +178,10 @@ class Provider implements ProviderInterface {
 	
 	 public function findByLdapCredentials(array $credentials)
         {
-	 	$ldapConnection = ldap_connect($this->ldap['server'],$this->ldap['port']);
+	 	$ldapConnection = ldap_connect($this->ldap['server'],$this->ldap['port'])
+			or die("Could not connect to LDAP server.");
+                        ldap_set_option ($ldapConnection, LDAP_OPT_REFERRALS, 0);
+                        ldap_set_option($ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
 
                 foreach ($this->ldap['searchdn'] as $groupname => $dn)
                 {
