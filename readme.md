@@ -41,10 +41,14 @@ Installation of LdapSentry is very easy. Add:
 to your composer.json file then follow one of the following guides to get SentryLdap working with your favorite framework or on it's own:
 
 
-1. Install in [Laravel 4](http://docs.cartalyst.com/sentry-2/installation/laravel-4)
-2. Install in [FuelPHP 1](http://docs.cartalyst.com/sentry-2/installation/fuelphp-1)
-3. Install in [CodeIgniter 3](http://docs.cartalyst.com/sentry-2/installation/codeigniter-3)
-4. Use [natively (through composer)](http://docs.cartalyst.com/sentry-2/installation/composer)
+- [Install Sentry](https://cartalyst.com/manual/sentry#installation)
+
+### Getting Started
+
+- Use in [Laravel 4](https://cartalyst.com/manual/sentry#laravel-4)
+- Use in [FuelPHP 1](https://cartalyst.com/manual/sentry#fuelphp-1.x)
+- Use in [CodeIgniter 3](https://cartalyst.com/manual/sentry#codeigniter-3.0-dev)
+- Use [natively (through composer)](https://cartalyst.com/manual/sentry#native)
 
 ### Using
 

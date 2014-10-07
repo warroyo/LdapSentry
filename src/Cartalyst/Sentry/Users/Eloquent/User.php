@@ -26,7 +26,6 @@ use Cartalyst\Sentry\Users\PasswordRequiredException;
 use Cartalyst\Sentry\Users\UserAlreadyActivatedException;
 use Cartalyst\Sentry\Users\UserExistsException;
 use Cartalyst\Sentry\Users\UserInterface;
-use DateTime;
 
 class User extends Model implements UserInterface {
 
@@ -171,7 +170,7 @@ class User extends Model implements UserInterface {
 	 */
 	public function getPassword()
 	{
-		return $this->password;
+		return $this->{$this->getPasswordName()};
 	}
 
 	/**
@@ -401,7 +400,7 @@ class User extends Model implements UserInterface {
 		{
 			$this->activation_code = null;
 			$this->activated       = true;
-			$this->activated_at    = new DateTime;
+			$this->activated_at    = $this->freshTimestamp();
 			return $this->save();
 		}
 
@@ -496,6 +495,22 @@ class User extends Model implements UserInterface {
 		return $this->userGroups;
 	}
 
+    /**
+     * Clear the cached permissions attribute.
+     */
+    public function invalidateMergedPermissionsCache()
+    {
+		$this->mergedPermissions = null;
+    }
+
+    /**
+     * Clear the cached user groups attribute.
+     */
+    public function invalidateUserGroupsCache()
+    {
+		$this->userGroups = null;
+    }
+    
 	/**
 	 * Adds the user to the given group.
 	 *
@@ -507,7 +522,8 @@ class User extends Model implements UserInterface {
 		if ( ! $this->inGroup($group))
 		{
 			$this->groups()->attach($group);
-			$this->userGroups = null;
+			$this->invalidateUserGroupsCache();
+			$this->invalidateMergedPermissionsCache();
 		}
 
 		return true;
@@ -524,7 +540,8 @@ class User extends Model implements UserInterface {
 		if ($this->inGroup($group))
 		{
 			$this->groups()->detach($group);
-			$this->userGroups = null;
+			$this->invalidateUserGroupsCache();
+			$this->invalidateMergedPermissionsCache();
 		}
 
 		return true;
@@ -741,14 +758,14 @@ class User extends Model implements UserInterface {
 	 */
 	public function recordLogin()
 	{
-		$this->last_login = new DateTime;
+		$this->last_login = $this->freshTimestamp();
 		$this->save();
 	}
 
 	/**
 	 * Returns the relationship between users and groups.
 	 *
-	 * @return Illuminate\Database\Eloquent\Relations\BelongsToMany
+	 * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
 	 */
 	public function groups()
 	{
