@@ -62,16 +62,17 @@ This library is still beta for ldap functions. You have to change this lines in 
                 'searchdn'      =>  array('Guests' => ''),
         ),
 
+Installation of Sentry is very easy. We've got a number of guides to get Sentry working with your favorite framework or on it's own:
+### Getting Started
 
-After this settings you have to follow sentry orginal document file. You can use ldap login like this;
-
-     $user = Sentry::authenticateWithLdap($credentials, false);
-or
-
-      Sentry::authenticateWithLdapAndRemember($credentials);
+- Use in [Laravel 4](https://cartalyst.com/manual/sentry#laravel-4)
+- Use in [FuelPHP 1](https://cartalyst.com/manual/sentry#fuelphp-1.x)
+- Use in [CodeIgniter 3](https://cartalyst.com/manual/sentry#codeigniter-3.0-dev)
+- Use [natively (through composer)](https://cartalyst.com/manual/sentry#native)
 
 ### Upgrading
-this works with current version of sentry, I will work on updating.
+
+Currently, we do not have an upgrade method from Sentry 1, however we may be able to publish one before the stable release of Sentry 2.0. When upgrading between betas or release-candidates, please see [our changelog](https://github.com/cartalyst/sentry/blob/master/changelog.md).
 
 ### Support
 

@@ -115,6 +115,61 @@ interface ProviderInterface {
 	public function findAllWithAnyAccess(array $permissions);
 
 	/**
+	 * Finds a user by the given activation code.
+	 *
+	 * @param  string  $code
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 * @throws InvalidArgumentException
+	 * @throws RuntimeException
+	 */
+	public function findByActivationCode($code);
+
+	/**
+	 * Finds a user by the given reset password code.
+	 *
+	 * @param  string  $code
+	 * @return \Cartalyst\Sentry\Users\UserInterface
+	 * @throws RuntimeException
+	 * @throws \Cartalyst\Sentry\Users\UserNotFoundException
+	 */
+	public function findByResetPasswordCode($code);
+
+	/**
+	 * Returns an all users.
+	 *
+	 * @return array
+	 */
+	public function findAll();
+
+	/**
+	 * Returns all users who belong to
+	 * a group.
+	 *
+	 * @param  \Cartalyst\Sentry\Groups\GroupInterface  $group
+	 * @return array
+	 */
+	public function findAllInGroup(GroupInterface $group);
+
+	/**
+	 * Returns all users with access to
+	 * a permission(s).
+	 *
+	 * @param  string|array  $permissions
+	 * @return array
+	 */
+	public function findAllWithAccess($permissions);
+
+	/**
+	 * Returns all users with access to
+	 * any given permission(s).
+	 *
+	 * @param  array  $permissions
+	 * @return array
+	 */
+	public function findAllWithAnyAccess(array $permissions);
+
+	/**
 	 * Creates a user.
 	 *
 	 * @param  array  $credentials

@@ -175,7 +175,6 @@ class Provider implements ProviderInterface {
 		return $user;
 	}
 	
-	
 	 public function findByLdapCredentials(array $credentials)
         {
 	 	$ldapConnection = ldap_connect($this->ldap['server'],$this->ldap['port'])
@@ -262,7 +261,6 @@ class Provider implements ProviderInterface {
                         }
                         ldap_unbind($ldapConnection);
         }
-
 
 	/**
 	 * Finds a user by the given activation code.
