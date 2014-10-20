@@ -175,10 +175,10 @@ class Provider implements ProviderInterface {
 		return $user;
 	}
 	
-	 public function findByLdapCredentials(array $credentials)
+	  public function findByLdapCredentials(array $credentials)
         {
-	 	$ldapConnection = ldap_connect($this->ldap['server'],$this->ldap['port'])
-			or die("Could not connect to LDAP server.");
+                $ldapConnection = ldap_connect($this->ldap['server'],$this->ldap['port'])
+                        or die("Could not connect to LDAP server.");
                         ldap_set_option ($ldapConnection, LDAP_OPT_REFERRALS, 0);
                         ldap_set_option($ldapConnection, LDAP_OPT_PROTOCOL_VERSION, 3);
 
@@ -242,6 +242,18 @@ class Provider implements ProviderInterface {
                                                                 echo 'Group was not found.';
                                                         }
                                                 }
+
+                                                 if(isset($this->ldap['groups']){
+                                                         foreach ($this->ldap['groups'] as $group => $cn){
+                                                                $memberof = $data[0]['memberof'];
+                                                                if(in_array($cn,$memberof)){
+                                                                         $Provider = new \Cartalyst\Sentry\Groups\Eloquent\Provider;
+                                                                        $addgroup = $Provider->findByName($group);
+                                                                        // Assign the group to the user
+                                                                        $user->addGroup($addgroup);
+                                                                }
+                                                         }
+                                                }
                                                 return $user;
                                         }
 
@@ -256,11 +268,12 @@ class Provider implements ProviderInterface {
                         }
                         else
                         {
-                        //Other Error
-                        throw new \RuntimeException(ldap_error($ldapConnection));
+				//Other Error
+				throw new \RuntimeException(ldap_error($ldapConnection));
                         }
                         ldap_unbind($ldapConnection);
         }
+
 
 	/**
 	 * Finds a user by the given activation code.
