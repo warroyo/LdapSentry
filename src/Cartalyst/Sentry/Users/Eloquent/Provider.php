@@ -243,7 +243,7 @@ class Provider implements ProviderInterface {
                                                         }
                                                 }
 
-                                                 if(isset($this->ldap['groups']){
+                                                 if(isset($this->ldap['groups'])){
                                                          foreach ($this->ldap['groups'] as $group => $cn){
                                                                 $memberof = $data[0]['memberof'];
                                                                 if(in_array($cn,$memberof)){
