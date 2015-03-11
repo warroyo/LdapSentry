@@ -191,7 +191,16 @@ class Provider implements ProviderInterface {
                                         $username=$data[0]['distinguishedname'][0];
                                         $full= explode(',',$data[0]['displayname'][0]);
                                         $last=$full[0];
-                                        $first=$full[1];
+                                        if(isset($full[1])){
+                                          $first=$full[1];
+                                        }else{
+                                           $first = "";
+                                        }
+                                        if(isset($data[0]['mail'])){
+                                                $email = $data[0]['mail'][0];
+                                        }else{
+                                                $email="empty";
+                                        }
                                         if (($result = @ldap_bind($ldapConnection,$username,$credentials['password']))){
 
                                                 $model     = $this->createModel();
@@ -217,7 +226,7 @@ class Provider implements ProviderInterface {
                                                            $user = $this->create(
                                                                 array(
                                                                         'username' => $credentials['email'],
-                                                                        'email' => $data[0]['mail'][0],
+                                                                        'email' => $email,
                                                                         'first_name' => $first,
                                                                         'last_name' => $last,
                                                                         'activated' => 1
