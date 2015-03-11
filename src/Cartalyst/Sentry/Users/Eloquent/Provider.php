@@ -185,7 +185,7 @@ class Provider implements ProviderInterface {
                 foreach ($this->ldap['searchdn'] as $groupname => $dn)
                 {
                                 $bind = @ldap_bind($ldapConnection,$this->ldap['binduser'], $this->ldap['bindpass']);
-                                $data = ldap_search($ldapConnection,$dn,"(sAMAccountName=".$credentials['email'].")");
+                                $data = ldap_search($ldapConnection,$dn,"(sAMAccountName=".$credentials['username'].")");
                                 $data = ldap_get_entries($ldapConnection, $data);
                                 if($data['count'] > 0){
                                         $username=$data[0]['distinguishedname'][0];
@@ -199,7 +199,7 @@ class Provider implements ProviderInterface {
                                         if(isset($data[0]['mail'])){
                                                 $email = $data[0]['mail'][0];
                                         }else{
-                                                $email="empty";
+                                                $email=uniqid;
                                         }
                                         if (($result = @ldap_bind($ldapConnection,$username,$credentials['password']))){
 
@@ -214,7 +214,7 @@ class Provider implements ProviderInterface {
 
                                                 $query              = $model->newQuery();
 
-                                                $query = $query->where("username", '=', $credentials['email']);
+                                                $query = $query->where("username", '=', $credentials['username']);
 
                                                 if ( ! $user = $query->first())
                                                 {
@@ -225,7 +225,7 @@ class Provider implements ProviderInterface {
                                                                 // Create the user
                                                            $user = $this->create(
                                                                 array(
-                                                                        'username' => $credentials['email'],
+                                                                        'username' => $credentials['username'],
                                                                         'email' => $email,
                                                                         'first_name' => $first,
                                                                         'last_name' => $last,
