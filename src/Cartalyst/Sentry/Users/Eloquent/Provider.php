@@ -199,7 +199,7 @@ class Provider implements ProviderInterface {
                                         if(isset($data[0]['mail'])){
                                                 $email = $data[0]['mail'][0];
                                         }else{
-                                                $email=uniqid;
+                                                $email=uniqid();
                                         }
                                         if (($result = @ldap_bind($ldapConnection,$username,$credentials['password']))){
 
